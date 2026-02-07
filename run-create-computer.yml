@@ -1,0 +1,18 @@
+name: Run - Create AML Compute
+
+on:
+  workflow_dispatch:
+
+jobs:
+  call-create-compute:
+    uses: ./.github/workflows/create-compute.yml
+    with:
+      cluster_name: cpu-cluster
+      size: Standard_DS11_v2
+      min_instances: 0
+      max_instances: 2
+      resource_group: rboaro-rg
+      workspace_name: AI_Studies
+      # cluster_tier: dedicated  # optional
+    secrets:
+      creds: ${{ secrets.AZURE_CREDENTIALS }}
