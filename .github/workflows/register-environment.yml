@@ -1,4 +1,4 @@
-name: register-dataset
+name: register-environment
 
 on:
   workflow_call:
@@ -9,7 +9,7 @@ on:
       workspace_name:
         required: true
         type: string
-      data_yaml:
+      env_yaml:
         required: true
         type: string
     secrets:
@@ -17,7 +17,7 @@ on:
         required: true
 
 jobs:
-  register-dataset:
+  register-environment:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -30,9 +30,10 @@ jobs:
           az extension add -n ml -y
           az extension update -n ml
 
-      - name: Register dataset (AML Data asset)
+      - name: Create/Update environment
         run: |
-          az ml data create \
-            --file "${{ inputs.data_yaml }}" \
+          az ml environment create \
+            --file "${{ inputs.env_yaml }}" \
             --resource-group "${{ inputs.resource_group }}" \
             --workspace-name "${{ inputs.workspace_name }}"
+
