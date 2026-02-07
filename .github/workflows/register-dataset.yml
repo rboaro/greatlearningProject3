@@ -1,0 +1,38 @@
+name: register-dataset
+
+on:
+  workflow_call:
+    inputs:
+      resource_group:
+        required: true
+        type: string
+      workspace_name:
+        required: true
+        type: string
+      data_yaml:
+        required: true
+        type: string
+    secrets:
+      creds:
+        required: true
+
+jobs:
+  register-dataset:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: azure/login@v1
+        with:
+          creds: ${{ secrets.creds }}
+
+      - run: |
+          az extension add -n ml -y
+          az extension update -n ml
+
+      - name: Register dataset (AML Data asset)
+        run: |
+          az ml data create \
+            --file "${{ inputs.data_yaml }}" \
+            --resource-group "${{ inputs.resource_group }}" \
+            --workspace-name "${{ inputs.workspace_name }}"
