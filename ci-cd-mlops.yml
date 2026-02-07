@@ -1,0 +1,44 @@
+name: CI/CD - Azure ML
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - "mlops/**"
+      - ".github/workflows/**"
+  workflow_dispatch:
+
+jobs:
+  # ---- CI: lint + unit tests (optional but recommended)
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Run tests
+        run: |
+          if [ -d tests ]; then pytest -q; else echo "No tests folder, skipping"; fi
+
+  # ---- CD step 1: ensure compute exists (calls your reusable workflow)
+  create_compute:
+    needs: ci
+    uses: ./.github/workflows/create-compute.yml
+    with:
+      cluster_name: cpu-cluster
+      size: Standard_DS11_v2
+      min_instances: 0
+      max_instances: 2
+      resource_group: rboaro-rg
+      workspace_name: AI_Studies
+    secrets:
+      creds: ${{ secrets.AZURE_CREDENTIALS }}
