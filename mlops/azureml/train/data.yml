@@ -4,4 +4,5 @@ type: uri_file
 name: used-cars-data
 description: Used cars CSV dataset for training and evaluation
 
-path: data/used_cars.csv
+path: ../../../data/used_cars.csv
+
