@@ -1,0 +1,10 @@
+resource_group: rboaro-rg
+workspace_name: AI_Studies
+cluster_name: cpu-cluster
+vm_size: Standard_DS11_v2
+min_instances: 0
+max_instances: 2
+
+data_yaml: mlops/azureml/train/data.yml
+env_yaml: mlops/azureml/train/train-env.yml
+pipeline_yaml: mlops/azureml/train/pipeline.yml
