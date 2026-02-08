@@ -22,33 +22,32 @@ jobs:
     secrets:
       creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-register-dataset:
-  needs: create-compute
-  uses: ./.github/workflows/register-dataset.yml
-  with:
-    resource_group: rboaro-rg
-    workspace_name: AI_Studies
-    data_yaml: mlops/azureml/train/data.yml
-  secrets:
-    creds: ${{ secrets.AZURE_CREDENTIALS }}
+  register-dataset:
+    needs: create-compute
+    uses: ./.github/workflows/register-dataset.yml
+    with:
+      resource_group: rboaro-rg
+      workspace_name: AI_Studies
+      data_yaml: mlops/azureml/train/data.yml
+    secrets:
+      creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-register-environment:
-  needs: register-dataset
-  uses: ./.github/workflows/register-environment.yml
-  with:
-    resource_group: rboaro-rg
-    workspace_name: AI_Studies
-    env_yaml: mlops/azureml/train/train-env.yml
-  secrets:
-    creds: ${{ secrets.AZURE_CREDENTIALS }}
+  register-environment:
+    needs: register-dataset
+    uses: ./.github/workflows/register-environment.yml
+    with:
+      resource_group: rboaro-rg
+      workspace_name: AI_Studies
+      env_yaml: mlops/azureml/train/train-env.yml
+    secrets:
+      creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-run-pipeline:
-  needs: register-environment
-  uses: ./.github/workflows/run-pipeline.yml
-  with:
-    resource_group: rboaro-rg
-    workspace_name: AI_Studies
-    pipeline_yaml: mlops/azureml/train/train.yml
-  secrets:
-    creds: ${{ secrets.AZURE_CREDENTIALS }}
-
+  run-pipeline:
+    needs: register-environment
+    uses: ./.github/workflows/run-pipeline.yml
+    with:
+      resource_group: rboaro-rg
+      workspace_name: AI_Studies
+      pipeline_yaml: mlops/azureml/train/pipeline.yml
+    secrets:
+      creds: ${{ secrets.AZURE_CREDENTIALS }}
